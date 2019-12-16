@@ -16,6 +16,7 @@ public class KonfigurimP extends JPanel {
         setBounds(220, 0, 120, 700);
     for(int i=0;i<_jradio.length;i++)
     {
+    	
         if(i==0)
         {
             _jradio[i]=new JRadioButton("Kategoria "+(i+1)+" :",true);
@@ -29,6 +30,7 @@ public class KonfigurimP extends JPanel {
         
         G1.add(_jradio[i]);
         add(_jradio[i]);
+        _jradio[0].setSelected(false);
 
         
         
@@ -39,6 +41,10 @@ public class KonfigurimP extends JPanel {
     //_jradio[1].setSelected(true);
 }
 
+    public void update_kategori(int index,boolean b)
+    {
+    	_jradio[index].setEnabled(b);
+    }
 public JRadioButton[] getbutonatradio(){
     return _jradio;
 }

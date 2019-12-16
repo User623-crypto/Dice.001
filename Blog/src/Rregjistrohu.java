@@ -33,7 +33,7 @@ public class Rregjistrohu extends JPanel {
     //SQL part
     String url="jdbc:mysql://localhost:3306/dice";
 	String user="root";
-	String password="testing1234";
+	String password="12345elb";
 
     public Menu a;
     Connection myCon;
@@ -173,7 +173,7 @@ public class Rregjistrohu extends JPanel {
                        
                        
                         
-                        if(!existemri(emer)&& isParsable(moshe)) {
+                        if((!existemri(emer,mbiemer) )&& isParsable(moshe) ) {
                     	try {
                     		
                     			myCon=DriverManager.getConnection(url,user,password);
@@ -235,26 +235,20 @@ public class Rregjistrohu extends JPanel {
         }
     }
 
-
-
-    public void rregjstro()
-    {
-        
-    }
-
     public Menu menubar()
     {
         return this.a;
     }
     
     //Kontrollon nese ekziston emri
-    public  boolean existemri(String a)
+    public  boolean existemri(String a,	String b)
     {
     	
     	Connection connection=null;
     	Statement myStmtA=null;
     	ResultSet myRs=null;
     	String c;
+    	String d;
     	boolean flag=false;
     	
     	try {
@@ -262,16 +256,18 @@ public class Rregjistrohu extends JPanel {
 			connection=DriverManager.getConnection(url,user,password);
 			 myStmtA=connection.createStatement();
 			
-			 myRs=myStmtA.executeQuery("select Emri from lojtaret");
+			 myRs=myStmtA.executeQuery("select * from lojtaret");
 			 
 			
 			while(myRs.next())
 			{
 				 
 				c=myRs.getString("Emri");
+				d = myRs.getString("Mbiemri");
+				
 				System.out.println(c);
 				
-				if(c.equals(a))
+				if(c.equals(a) && d.equals(b))
 				{
 					flag=true;
 					

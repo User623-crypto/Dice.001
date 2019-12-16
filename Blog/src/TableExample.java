@@ -5,10 +5,15 @@ import java.awt.*;
 import java.awt.FlowLayout;
 
 public class TableExample extends JPanel {    
-    
+    private boolean[] table_kategori = new boolean[13];
       
     DefaultTableModel model;
     TableExample(String s,int x){ 
+    	
+    	for(int i = 0;i<table_kategori.length;i++)
+    	{
+    		table_kategori[i] = true;
+    	}
      model = new DefaultTableModel(); 
      setLayout(new BorderLayout());   
      
@@ -47,7 +52,20 @@ public class TableExample extends JPanel {
 
     
     
-    } 
+    }
+    public boolean[] return_kategori()
+    {
+    	return table_kategori;
+    }
+    public boolean return_kategori(int index)
+    {
+    	return table_kategori[index];
+    }
+    
+    public void  set_kategori(int cat_index)
+    {
+    	table_kategori[cat_index] = false;
+    }
     public DefaultTableModel getTable()
     {
         return model;

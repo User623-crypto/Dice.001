@@ -21,7 +21,7 @@ public class Game extends JFrame implements Runnable,MouseListener{
 	/*SQL PART*/
 	 String url="jdbc:mysql://localhost:3306/dice";
 	 String user="root";
-	 String password="testing1234";
+	 String password="12345elb";
 	 
 	 
 	 
@@ -35,7 +35,7 @@ public class Game extends JFrame implements Runnable,MouseListener{
 	 private int click_count = 0;
      JPanel show_turn = new JPanel();
      public static  int game_turn=0;
-	 private JLabel turn_text = new JLabel("TURN: "+(game_turn+1));
+	 private JLabel turn_text;
 	 private int points = 0;
 	 //ArrayList per te mbajtur zaret qe do te hiddhen 
 	 //public ArrayList<JLabel> dice_arr = new ArrayList();
@@ -70,14 +70,14 @@ public class Game extends JFrame implements Runnable,MouseListener{
 			_piket[i]=0;
 		}
 		
-		
+		 turn_text = new JLabel("TURN: "+(_emrat[game_turn]));
 		
         int pozx=500;
 		_mainevent=new mainevent();
         panel_konf=new KonfigurimP();
         for(int i=0;i<_lojtaret.length;i++)
         {
-        _lojtaret[i]=new TableExample("Luka",pozx);
+        _lojtaret[i]=new TableExample(_emrat[i],pozx);
         pozx+=65;
         }
 		
@@ -498,12 +498,15 @@ public void showplayer_turn()
             if(e.getSource()==button)
             {
                 roll=true;
+                
                 btnktg.setEnabled(true);
-                if(countercount < 20 && cat_count < 2)
+                if(countercount < 3 && cat_count < 2)
+                	
 				
 			  
                 {
                     
+                	
                     countercount++;
                     //gjenerimi randon i imazheve per zarat
                     click_count = 0;
@@ -533,16 +536,23 @@ public void showplayer_turn()
 
             if(e.getSource()==btnktg)
             {
+            	
+            	//turn_text.setText("TURN "+ _emrat[game_turn]);
+            	
                 if(roll==true){
                     countercount=0;
                     int piket=getcategorypoitns();
                     _piket[game_turn]+=piket;
                 _lojtaret[game_turn].addpoints(piket, getSelectedJr(), 0);
+                _lojtaret[game_turn].set_kategori(getSelectedJr());
+                
                 game_turn++;
+                
                 
                 roll=false;
                 btnktg.setEnabled(false);
-                panel_konf.getJRadio(0).setSelected(true);
+                //panel_konf.getJRadio(0).setSelected(true);
+               
                 if(checkwinner())
                 {
                 	for(int i=0;i<_emrat.length;i++)
@@ -552,13 +562,31 @@ public void showplayer_turn()
                 if(game_turn==_lojtaret.length)
                     game_turn=0;
                 }
-                turn_text.setText("Turn: "+(game_turn+1));
+                
+                set_Jradio(_lojtaret[game_turn]);
+                for(int i = 0;i<panel_konf.getbutonatradio().length;i++)
+                {
+                	if(panel_konf.getJRadio(i).isEnabled())
+                	{
+                		panel_konf.getJRadio(i).setSelected(true);
+                		break;
+                	}
+                }
+                turn_text.setText("TURN "+ _emrat[game_turn]);
             }
 
         }
 
     }
 
+    
+    public void set_Jradio(TableExample player)
+    {
+    	for(int i = 0;i<player.return_kategori().length;i++)
+    	{
+    		panel_konf.update_kategori(i, player.return_kategori(i));
+    	}
+    }
     public int getcategorypoitns()
     {
         
@@ -572,7 +600,9 @@ public void showplayer_turn()
         {
             if(panel_konf.getJRadio(i).isSelected())
             {
+            	
                 kthehet=i;
+                
             }
         }
         return kthehet;
@@ -602,6 +632,7 @@ public void showplayer_turn()
     	
     	Connection rr_connection=null;
     	Statement rr_statement=null;
+    	Statement _rr_ = null;
     	ResultSet rr_rs=null;
     	
     	 
@@ -609,17 +640,20 @@ public void showplayer_turn()
     	try {
     		rr_connection=DriverManager.getConnection(url,user,password);
     		rr_statement=rr_connection.createStatement();
+    		_rr_ = rr_connection.createStatement();
+    		
 			
 			// myRs=myStmt.executeQuery("select Emri from lojtaret"
 			 	 
     		rr_rs=rr_statement.executeQuery("select * from lojtaret");
+    		
 				while(rr_rs.next())
 				{
 					
 					if(emrat.equals(rr_rs.getString("Emri")))
 					{
 						if(pik>rr_rs.getInt("Piket")) {
-							rr_statement.executeUpdate("UPDATE lojtaret set Piket="+pik+" where idLojtaret="+rr_rs.getInt("idLojtaret"));}
+							_rr_.executeUpdate("UPDATE lojtaret set Piket="+pik+" where idLojtaret="+rr_rs.getInt("idLojtaret"));}
 						
 						
 						
@@ -634,36 +668,9 @@ public void showplayer_turn()
     		try { rr_rs.close(); } catch (Exception e) { /* ignored */ }
     	    try { rr_statement.close(); } catch (Exception e) { /* ignored */ }
     	    try { rr_connection.close(); } catch (Exception e) { /* ignored */ }
-    	}
-    	if(rr_rs!=null)
-    	{
-    		try {
-				rr_rs.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    	    try { _rr_.close(); } catch (Exception e) { /* ignored */}
     	}
     	
-    	if(rr_statement!=null)
-    	{
-    		try {
-				rr_statement.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    	
-    	if(rr_connection!=null)
-    	{
-    		try {
-				rr_connection.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
     	
     	
     	
